@@ -1,0 +1,16 @@
+O microsserviço recebe uma lista com os pares [numerador, denominador], na qual o último termo é a resposta fornecida pelo usuário. Não há limite para a quantidade de termos.
+
+Exemplo: 
+[[1, 2], [2, 3], [7, 6]]           => 1/2 + 2/3 = 7/6
+[[1, 2], [2, 3], [3, 4], [46, 24]] => 1/2 + 2/3 + 3/4 = 46/24
+
+Exemplos de utilização:
+
+curl -X POST 'http://0.0.0.0:5004/resposta' -H 'Content-Type: application/json' -d '{"data": [[1, 2], [2, 3], [3, 4], [23, 12]]}'
+{"message":"correto","resultado":[23,12]}
+
+curl -X POST 'http://0.0.0.0:5004/resposta' -H 'Content-Type: application/json' -d '{"data": [[1, 2], [2, 3], [3, 4], [46, 24]]}'
+{"message":"correto","resultado":[23,12]}
+
+curl -X POST 'http://0.0.0.0:5004/resposta' -H 'Content-Type: application/json' -d '{"data": [[1, 2], [2, 3], [3, 4], [1, 2]]}'  
+{"message":"errado","resultado":[23,12]}
