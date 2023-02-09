@@ -14,3 +14,14 @@ curl -X POST 'http://0.0.0.0:5004/resposta' -H 'Content-Type: application/json' 
 
 curl -X POST 'http://0.0.0.0:5004/resposta' -H 'Content-Type: application/json' -d '{"data": [[1, 2], [2, 3], [3, 4], [1, 2]]}'  
 {"message":"errado","resultado":[23,12]}
+
+
+
+
+
+curl -X POST 'http://0.0.0.0:5004/resposta_simples' -H 'Content-Type: application/json' -d '{"n1":1,"n2":1,"d1":1,"d2":1,"rn":2,"rd":1}'
+ curl -X POST 'http://0.0.0.0:5004/resposta_simples' -H 'Content-Type: application/json' -d '{"n1":1,"n2":1,"d1":6,"d2":12,"rn":1,"rd":1}'
+
+
+ curl -X POST 'http://0.0.0.0:5004/passo_intermediario' -H 'Content-Type: application/json' -d '{"n1":1,"n2":1,"d1":6,"d2":12,"rn1":1,"rd1":1,"rn2":2,"rd2":2}'
+ curl -X POST 'http://0.0.0.0:5004/passo_intermediario' -H 'Content-Type: application/json' -d '{"n1":1,"n2":1,"d1":3,"d2":4,"rn1":4,"rd1":12,"rn2":3,"rd2":12}'
