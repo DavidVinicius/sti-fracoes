@@ -1,49 +1,49 @@
 <template>
     <div class="fraction">
-        
-        <div class="numerator"> 
+
+        <div class="numerator">
             <div v-if="!isInput">
                 {{ numerator }}
             </div>
             <div v-else>                
-                <input class="input" type="text">
+                <input class="input" type="text" :value=numerator  @input="$emit('update:numerator', parseInt($event.target.value))">
             </div>
 
         </div>
-        <div class="denominator"> 
-            <div v-if="!isInput">                
+        <div class="denominator">
+            <div v-if="!isInput">
                 {{ denominator }}
             </div>
-            <div v-else>
-                <input class="input" type="text">
+            <div v-else>                
+                <input class="input" type="text" :value=denominator @input="$emit('update:denominator', parseInt($event.target.value))">
             </div>
         </div>
     </div>
 </template>
 
 <script>
-    export default {
-        mounted() {
-            console.log(this.isInput);
+export default {
+    mounted() {
+        console.log(this.isInput);
+    },
+    props: {
+        numerator: {
+            type: String,
+            required: false,
+            default: "?"
         },
-        props: {
-            numerator: {
-                type:String,
-                required: false,
-                default: ""
-            },
-            denominator: {
-                type: String,
-                required: false,
-                default: ""
-            },
-            isInput: {
-                type: Boolean,
-                required: false,
-                default: false,
-            }
-        }        
+        denominator: {
+            type: String,
+            required: false,
+            default: "?"
+        },
+        isInput: {
+            type: Boolean,
+            required: false,
+            default: false,
+        }
     }
+}
 </script>
 
 
@@ -59,7 +59,7 @@
     text-align: center;
 }
 
-.denominator {    
+.denominator {
     width: 1.5em;
     text-align: center;
 }
