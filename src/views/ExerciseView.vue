@@ -7,8 +7,10 @@ import { ref, computed } from 'vue'
 
 const $user = useUserStore();
 
+console.log($user);
+
 const api = axios.create({
-    baseURL: 'http://0.0.0.0:5004/',
+    baseURL: 'http://localhost:5004/',
     withCredentials: true
 });
 
@@ -46,15 +48,13 @@ const showSimplification = ref(false);
 const ansnumerator = ref();
 const ansdenominator = ref();
 function checkAnswer() {
+
     if (showAnswer.value == true && !passou_resposta)
         checkUnsimplifiedAnswer();
     if (!showAnswer.value)
         checkMiddleStep();
     if (passou_resposta)
         checkSimplifiedAnswer();
-
-
-
 }
 
 
@@ -178,7 +178,7 @@ function checkSimplifiedAnswer() {
 }
 
 function fimExercicio() {
-
+    $user.increaseProgress();
     window.alert("fim do exercício");
 
 }
@@ -187,16 +187,32 @@ function fimExercicio() {
 // });
 
 
+</script>
 
-
-
-
+<script>
+export default {
+    data() {
+        return {
+            test: "Hello world"
+        }
+    }
+}
 </script>
 
 <template>
     <main>
         <v-container class="container">
+            
             <div class="panel-login" align="center">
+                <div class="progress-bar">
+                    <v-progress-linear
+                    v-model="$user.progress"
+                    height="10"
+                    :buffer-value="$user.totalExercises"
+                    color="blue"
+                    ></v-progress-linear>
+                </div>
+
                 <h1 class="text-center font-weight-light">{{ $user.name }}, você sabe resolver esse exercício?</h1>
 
 
@@ -248,13 +264,13 @@ function fimExercicio() {
 
                 <div style="display:flex; justify-content: center; flex-flow: column;">
                     <div>
-                        <v-btn @click="checkAnswer()" class="mt-5 bg-blue">
+                        <v-btn @click="checkAnswer()" class="mt-5 bg-blue btn">
                             Responder
                         </v-btn>
                     </div>
 
                     <RouterLink to="/">
-                        <v-btn class="mt-5 bg-red">
+                        <v-btn class="mt-5 bg-red btn">
                             Desistir
                         </v-btn>
                     </RouterLink>
@@ -267,6 +283,13 @@ function fimExercicio() {
 
 
 <style scoped>
+
+.btn {
+    width: 150px;
+}
+.progress-bar {
+    margin-bottom: 50px;
+}
 .container {
     width: 100vw;
     align-items: center;

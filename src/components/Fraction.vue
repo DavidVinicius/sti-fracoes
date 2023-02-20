@@ -6,7 +6,7 @@
                 {{ numerator }}
             </div>
             <div v-else>                
-                <input class="input" type="text" :value=numerator  @input="$emit('update:numerator', parseInt($event.target.value))">
+                <input class="input" type="text" :value=numerator  @input="formatInputNumerator">
             </div>
 
         </div>
@@ -15,7 +15,7 @@
                 {{ denominator }}
             </div>
             <div v-else>                
-                <input class="input" type="text" :value=denominator @input="$emit('update:denominator', parseInt($event.target.value))">
+                <input class="input" type="text" :value=denominator @input="formatInputDenominator">
             </div>
         </div>
     </div>
@@ -28,12 +28,12 @@ export default {
     },
     props: {
         numerator: {
-            type: String,
+            type: Number,
             required: false,
             default: "?"
         },
         denominator: {
-            type: String,
+            type: Number,
             required: false,
             default: "?"
         },
@@ -41,6 +41,14 @@ export default {
             type: Boolean,
             required: false,
             default: false,
+        }
+    },
+    methods: {
+        formatInputDenominator($event) {                        
+            this.$emit(`update:denominator`, parseInt($event.target.value))
+        },
+        formatInputNumerator($event) {                        
+            this.$emit(`update:numerator`, parseInt($event.target.value))
         }
     }
 }
