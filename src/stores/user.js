@@ -7,6 +7,7 @@ export const useUserStore = defineStore('$user', {
             totalExercises: 10,
             progress: 0,
             accerts: 0,
+            level: "",
             errors: 0,
             actualExercise: {
                 trials: 0,
@@ -27,7 +28,12 @@ export const useUserStore = defineStore('$user', {
             this.name = '';
         },
         increaseProgress() {
+            this.accerts += 1;
             this.progress += 10;
+        },
+        registerError() {
+            this.errors += 1;
+            this.actualExercise.trials += 1;
         }
     },
 })

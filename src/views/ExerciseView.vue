@@ -1,255 +1,33 @@
-<script setup>
-import Wizard from '@/components/icons/Wizard.vue';
-import Fraction from '@/components/Fraction.vue';
-import { useUserStore } from '@/stores/user';
-import axios from 'axios';
-import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router';
-
-
-const router = useRouter()
-const $user = useUserStore();
-
-console.log($user);
-
-const api = axios.create({
-    baseURL: 'http://localhost:5004/',
-    withCredentials: true
-});
-
-
-const numerator1 = ref(1);
-const numerator2 = ref(1);
-const denominator1 = ref(1);
-const denominator2 = ref(1);
-
-const msgTutoria = ref("");
-msgTutoria.value = "";
-const Passos = {                    //Estados para acompanhar se aluno respondeu direto
-    INICIO: "INICIO",               //Exercicio está na primeira etapa
-    TODAS_ETAPAS: "TODAS_ETAPAS",	//Errou conta direta, fazendo processo longo    
-    SIMPLIFICA: "SIMPLIFICA"        //Faltou simplificar
+<style scoped>
+.btn {
+    width: 150px;
 }
 
-let passo = Passos.INICIO;
-console.log(passo)
-
-function requestExercice() {
-    let res = api.get('/exercicio').then(resp => {
-        console.log(resp);
-        numerator1.value = resp.data['n1'];
-        numerator2.value = resp.data['n2'];
-        denominator1.value = resp.data['d1'];
-        denominator2.value = resp.data['d2'];
-        msgTutoria.value = resp.data['msgTutoria'];
-    }).catch(error => {
-        console.log(error);
-    });
-
-}
-requestExercice();
-
-
-const canEditAnswer = ref(true);
-const canEditMiddleStep = ref(true);
-const canEditSimplification = ref(true);
-
-const showMiddleStep = ref(false);
-const showAnswer = ref(true);
-const showSimplification = ref(false);
-
-function tryToSkip() {
-    // window.alert("skip");
-    if (!showMiddleStep.value) {        
-        // passo = Passos.TODAS_ETAPAS;
-        msgTutoria.value="Tente resolver o problema em etapas"
-        showMiddleStep.value = true;
-        showAnswer.value = false;
-        ansnumerator.value = None;
-        ansdenominator.value = None;
-        return;
-    }
-
-    // const params = {
-    //     "n1": numerator1.value,        
-    // }
-    let res = api.post('/pularExercicio').then(resp => {
-        location.reload();
-    }).catch(error => {
-        console.log(error);
-    });
-
+.progress-bar {
+    margin-bottom: 50px;
 }
 
-
-const ansnumerator = ref();
-const ansdenominator = ref();
-function checkAnswer() {
-
-    if (showAnswer.value == true && !passou_resposta)
-        checkUnsimplifiedAnswer();
-    passo = Passos.TODAS_ETAPAS
-    if (!showAnswer.value) {
-        passo = Passos.TODAS_ETAPAS
-        checkMiddleStep();
-    }
-    if (passou_resposta) {
-        passo = Passos.SIMPLIFICA;
-        checkSimplifiedAnswer();
-    }
+.container {
+    width: 100vw;
+    align-items: center;
 }
 
-
-const ms_n1 = ref();
-const ms_n2 = ref();
-const ms_d1 = ref();
-const ms_d2 = ref();
-let passou_mmc = false;
-let passou_resposta = false;
-function checkMiddleStep() {
-
-    const params = {
-        "n1": numerator1.value,
-        "d1": denominator1.value,
-        "n2": numerator2.value,
-        "d2": denominator2.value,
-        "rn1": ms_n1.value,
-        "rd1": ms_d1.value,
-        "rn2": ms_n2.value,
-        "rd2": ms_d2.value,
-        'passo': passo
-    }
-
-    console.log(params)
-
-    let res = api.post('/passo_intermediario', params).then(resp => {
-        let mensagem = resp.data['message'];
-        // let resultado = resp.data['resultado'];        
-        msgTutoria.value = resp.data['msgTutoria'];
-
-        //window.alert(mensagem);
-        if (mensagem == 'correto') {
-            canEditMiddleStep.value = false;
-            showAnswer.value = true;
-            passou_mmc = true;
-        }
-    }).catch(error => {
-        console.log(error);
-    });
-    console.log(res);
+.panel-login {
+    width: 50vw;
+    margin: 0 auto !important;
 }
 
-function checkUnsimplifiedAnswer() {
-    console.log(ansnumerator.value);
-    const params = {
-        'n1': numerator1.value,
-        'n2': numerator2.value,
-        'd1': denominator1.value,
-        'd2': denominator2.value,
-        'rn': ansnumerator.value,
-        'rd': ansdenominator.value,
-        'passo': passo
-    }
-
-    console.log(params)
-
-    let res = api.post('/resposta_simples', params).then(resp => {
-        let mensagem = resp.data['message'];
-        let resultado = resp.data['resultado'];
-        msgTutoria.value = resp.data['msgTutoria']
-        // window.alert(resultado);
-        //window.alert(mensagem);
-        if (mensagem == 'errado' && !passou_mmc) {
-            showMiddleStep.value = true;
-            showAnswer.value = false;
-            ansnumerator.value = 0;
-            ansdenominator.value = 0;
-        }
-        if (mensagem == 'correto') {
-
-            if (resultado[0] != ansnumerator.value &&
-                resultado[1] != ansdenominator.value) {
-
-                // window.alert("precisa simplificar");
-
-                passou_resposta = true;
-                showSimplification.value = true;
-                canEditAnswer.value = false;
-                canEditSimplification.value = true;
-            } else if (resultado[0] == ansnumerator.value &&
-                resultado[1] == ansdenominator.value) {
-                fimExercicio();
-            }
-        }
-
-
-    }).catch(error => {
-        console.log(error);
-    });
-    console.log(res);
+.exercise {
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    align-items: center;
 }
 
-const s_ansnumerator = ref();
-const s_ansdenominator = ref();
-function checkSimplifiedAnswer() {
-    console.log(ansnumerator.value);
-    const params = {
-        'n1': numerator1.value,
-        'n2': numerator2.value,
-        'd1': denominator1.value,
-        'd2': denominator2.value,
-        'rn': s_ansnumerator.value,
-        'rd': s_ansdenominator.value,
-        'passo': passo
-    }
-
-    console.log(params)
-
-    let res = api.post('/resposta_simples', params).then(resp => {
-        let mensagem = resp.data['message'];
-        let resultado = resp.data['resultado'];
-        msgTutoria.value = resp.data['msgTutoria'];
-        // window.alert(resultado);
-        // window.alert(mensagem);
-
-        if (mensagem == 'correto' &&
-            resultado[0] != s_ansnumerator.value &&
-            resultado[1] != s_ansdenominator.value) {
-
-            window.alert("Ainda é necessário simplificar");
-        } else if (mensagem == 'correto' &&
-            resultado[0] == s_ansnumerator.value &&
-            resultado[1] == s_ansdenominator.value) {
-            fimExercicio();
-        }
-
-    }).catch(error => {
-        console.log(error);
-    });
-    console.log(res);
+.operator {
+    font-size: 2rem;
 }
-
-function fimExercicio() {
-    $user.increaseProgress();
-    window.alert(msgTutoria.value);
-    location.reload();
-}
-// const stepOneEnabled = computed(() => {
-//     return !(answerEnabled.value);
-// });
-
-
-</script>
-
-<script>
-export default {
-    data() {
-        return {
-            test: "Hello world"
-        }
-    }
-}
-</script>
+</style>
 
 <template>
     <main>
@@ -258,26 +36,21 @@ export default {
             <div class="panel-login" align="center">
                 <div class="progress-bar">
                     <v-progress-linear
-                    v-model="$user.progress"
+                    v-model="$userStore.progress"
                     height="10"
-                    :buffer-value="$user.totalExercises"
+                    :buffer-value="$userStore.totalExercises"
                     color="blue"
                     ></v-progress-linear>
                 </div>
 
-                <h1 class="text-center font-weight-light">{{ $user.name }}, você sabe resolver esse exercício? </h1>
-                <h1 class="text-center font-weight-light">{{ msgTutoria }}</h1>
-
-
-
-
+                <h1 class="text-center font-weight-light">{{ $userStore.name }}, você sabe resolver esse exercício? </h1>
 
                 <div class="exercise"> <!-- Apresentação do exercício-->
-                    <Fraction :numerator=numerator1 :denominator=denominator1 class="mr-3" />
+                    <Fraction :numerator="numerator1" :denominator="denominator1" class="mr-3" />
 
                     <span class="operator mr-3">+</span>
 
-                    <Fraction class="mr-3" :numerator=numerator2 :denominator=denominator2 />
+                    <Fraction class="mr-3" :numerator="numerator2" :denominator="denominator2" />
 
                     <span class="operator mr-3">=</span>
 
@@ -325,7 +98,7 @@ export default {
                     </div>
                     <div style="display:flex; justify-content: center; flex-flow: column;">
                         <div>
-                            <v-btn @click="tryToSkip()" class="mt-5 bg-red">
+                            <v-btn @click="tryToSkip()" class="mt-5 bg-red btn">
                                 Pular
                             </v-btn>
                         </div>
@@ -343,33 +116,271 @@ export default {
     </main>
 </template>
 
+<script>
+import Fraction from '@/components/Fraction.vue';
+import axios from 'axios';
+import { mapStores } from 'pinia'
+import { useUserStore } from '@/stores/user';
+import cookies from '../cookie'
 
-<style scoped>
 
-.btn {
-    width: 150px;
-}
-.progress-bar {
-    margin-bottom: 50px;
-}
-.container {
-    width: 100vw;
-    align-items: center;
-}
+const api = axios.create({
+    baseURL: 'http://localhost:5004/',
+    withCredentials: true
+});
 
-.panel-login {
-    width: 50vw;
-    margin: 0 auto !important;
-}
+export default {
+    mounted() {
+        console.log(this.$toast);
+        this.requestExercice();
+    },
+    components: {
+        Fraction
+    },
+    data() {
+        return {
+            msgTutoria: "",
+            passou_mmc: false,
+            passou_resposta: false,
+            canEditAnswer: true,
+            canEditMiddleStep: true,
+            canEditSimplification: true,
+            showMiddleStep: false,
+            showAnswer: true,
+            showSimplification: false,
 
-.exercise {
-    display: flex;
-    flex-flow: row;
-    justify-content: center;
-    align-items: center;
-}
+            numerator1: 1,
+            numerator2: 1,
+            denominator1: 1,
+            denominator2: 1,
 
-.operator {
-    font-size: 2rem;
+            ms_n1: null,
+            ms_n2: null,
+            ms_d1: null,
+            ms_d2: null,
+
+            ansnumerator: null,
+            ansdenominator: null,
+
+            s_ansnumerator: null,
+            s_ansdenominator: null,
+
+            Passos: {                    //Estados para acompanhar se aluno respondeu direto
+                INICIO: "INICIO",               //Exercicio está na primeira etapa
+                TODAS_ETAPAS: "TODAS_ETAPAS",	//Errou conta direta, fazendo processo longo    
+                SIMPLIFICA: "SIMPLIFICA"        //Faltou simplificar
+            },
+            passo: "INICIO"
+        }
+    },
+    computed: {
+        ...mapStores(useUserStore)
+    },
+    methods: {
+        requestExercice() {
+            let res = api.get('/exercicio').then(resp => {
+                console.log(resp);
+                this.numerator1 = resp.data['n1'];
+                this.numerator2 = resp.data['n2'];
+                this.denominator1 = resp.data['d1'];
+                this.denominator2 = resp.data['d2'];
+                this.msgTutoria = resp.data['msgTutoria'];
+            }).catch(error => {
+                console.log(error);
+            });
+        },
+        checkAnswer() {
+            
+
+            if (this.showAnswer == true && !this.passou_resposta)
+                this.checkUnsimplifiedAnswer();
+            this.passo = this.Passos.TODAS_ETAPAS
+            if (!this.showAnswer) {
+                this.passo = this.Passos.TODAS_ETAPAS
+                this.checkMiddleStep();
+            }
+            if (this.passou_resposta) {
+                this.passo = this.Passos.SIMPLIFICA;
+                this.checkSimplifiedAnswer();
+            }
+        },
+        checkUnsimplifiedAnswer() {
+            console.log(this.ansnumerator);
+            if (this.ansdenominator == null || this.ansnumerator == null) {
+                this.$toast.error("Preencha a resposta primeiro");
+                return;
+            }
+            
+
+            const params = {
+                'n1': this.numerator1,
+                'n2': this.numerator2,
+                'd1': this.denominator1,
+                'd2': this.denominator2,
+                'rn': this.ansnumerator,
+                'rd': this.ansdenominator,
+                'passo': this.passo
+            }
+
+            console.log(params)
+
+            let res = api.post('/resposta_simples', params).then(resp => {
+                let mensagem = resp.data['message'];
+                let resultado = resp.data['resultado'];
+                
+                this.$toast.info(resp.data['msgTutoria']);
+
+                if (mensagem == 'errado' && !this.passou_mmc) {
+                    this.showMiddleStep = true;
+                    this.showAnswer = false;
+                    this.ansnumerator = 0;
+                    this.ansdenominator = 0;
+                }
+
+                if (mensagem == 'correto') {
+
+                    if (resultado[0] != this.ansnumerator &&
+                        resultado[1] != this.ansdenominator) {
+
+                        this.passou_resposta = true;
+                        this.showSimplification = true;
+                        this.canEditAnswer = false;
+                        this.canEditSimplification = true;
+                    } else if (resultado[0] == this.ansnumerator && resultado[1] == this.ansdenominator) {
+                        this.fimExercicio();
+                    }
+                }
+
+
+            }).catch(error => {
+                console.log(error);
+            });
+            console.log(res);
+        },
+        checkSimplifiedAnswer() {
+            console.log(this.ansnumerator);
+            const params = {
+                'n1': this.numerator1,
+                'n2': this.numerator2,
+                'd1': this.denominator1,
+                'd2': this.denominator2,
+                'rn': this.s_ansnumerator,
+                'rd': this.s_ansdenominator,
+                'passo': this.passo
+            }
+
+            console.log(params)
+
+            let res = api.post('/resposta_simples', params).then(resp => {
+                let mensagem = resp.data['message'];
+                let resultado = resp.data['resultado'];
+                this.$toast.info(resp.data['msgTutoria']);
+
+                if (mensagem == 'correto' &&
+                    resultado[0] != this.s_ansnumerator &&
+                    resultado[1] != this.s_ansdenominator) {
+                    this.$toast.info("Ainda é necessário simplificar");
+
+                } else if (mensagem == 'correto' &&
+                    resultado[0] == this.s_ansnumerator &&
+                    resultado[1] == this.s_ansdenominator) {
+                    
+                    this.fimExercicio();
+                }
+
+            }).catch(error => {
+                console.log(error);
+            });
+            console.log(res);
+        },
+        checkMiddleStep() {
+
+            if (this.ms_d1 == null || this.ms_d2 == null || this.ms_n1 == null || this.ms_n2 == null) {
+                this.$toast.error("Preencha a resposta primeiro");
+                return;
+            }
+
+            const params = {
+                "n1": this.numerator1,
+                "d1": this.denominator1,
+                "n2": this.numerator2,
+                "d2": this.denominator2,
+                "rn1": this.ms_n1,
+                "rd1": this.ms_d1,
+                "rn2": this.ms_n2,
+                "rd2": this.ms_d2,
+                'passo': this.passo
+            }
+
+            console.log(params)
+
+            let res = api.post('/passo_intermediario', params).then(resp => {
+                let mensagem = resp.data['message'];
+                // let resultado = resp.data['resultado'];        
+                
+
+                //window.alert(mensagem);
+                if (mensagem == 'correto') {
+                    this.canEditMiddleStep = false;
+                    this.showAnswer = true;
+                    this.passou_mmc = true;
+                    this.$toast.show("Você acertou a etapa intermediária!");
+                } else {
+                    this.$toast.info(resp.data['msgTutoria']);
+                }
+            }).catch(error => {
+                console.log(error);
+            });
+            console.log(res);
+        },
+        tryToSkip() {
+            // window.alert("skip");
+            if (!this.showMiddleStep) {
+                // passo = Passos.TODAS_ETAPAS; 
+                this.$toast.info("Tente resolver o problema em etapas");
+                this.showMiddleStep = true;
+                this.showAnswer = false;
+                this.ansnumerator = null;
+                this.ansdenominator = null;
+                return;
+            }
+
+            let res = api.post('/pularExercicio').then(resp => {
+                this.$toast.show("Pulando exercício");
+                this.fimExercicio(false);
+            }).catch(error => {
+                console.log(error);
+            });
+
+        },
+        fimExercicio(accert = true) {
+            if (accert) {
+                this.$userStore.increaseProgress();
+                this.$toast.success("Continue assim!");
+            }
+
+            if (this.$userStore.progress == 100) {
+                this.$router.push('/final');
+            }
+            
+            this.requestExercice();
+            this.ansnumerator = null;
+            this.ansdenominator = null;
+            this.ms_d1 = null;
+            this.ms_d2 = null;
+            this.ms_n1 = null;
+            this.ms_n2 = null;
+            this.showMiddleStep = false;
+            this.showAnswer = true;
+            this.showSimplification = false;
+            this.passou_mmc = false;
+            this.passou_resposta = false;
+            this.canEditAnswer = true;
+            this.canEditMiddleStep = true;
+            this.canEditSimplification = true;
+        }
+    }
 }
-</style>
+</script>
+
+

@@ -58,7 +58,7 @@ export default {
 <style>
 .fraction {
     position: relative;
-    width: 1.5em;
+    width: 1.7em;
     font-size: 2em;
 }
 
@@ -68,14 +68,14 @@ export default {
 }
 
 .denominator {
-    width: 1.5em;
+    width: 1.7em;
     text-align: center;
 }
 
 .input{
     border: 0.5px blue solid;
-    width: 1.5em;
-    height: 1.5em;
+    width: 1.7em;
+    height: 1.7em;
     text-align: center;
 }
 </style>
