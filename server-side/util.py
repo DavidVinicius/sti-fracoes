@@ -1,5 +1,7 @@
 from fractions import Fraction
 
+# modelo do dominio
+
 def verifica_resposta(dados):
     #recebe ultimo item da lista como resposta do usuario
     resposta = Fraction(dados[-1][0], dados[-1][1])
