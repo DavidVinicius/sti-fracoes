@@ -2,6 +2,8 @@ from util import verifica_resposta,denominador_comum
 from flask import Flask, request, jsonify
 
 from flask_cors import CORS
+from modelo_tutor import geraExercicio,PassosProblema, inhtervencaoPularExercicio, intervencaoTutorialPassoIntermediario, intervencaoTutorialResposta
+from modelo_aluno import ModeloAluno
 
 
 app = Flask(__name__)
@@ -32,10 +34,45 @@ def resposta_simples():
     n1,d1,n2,d2= content['n1'],content['d1'],content['n2'],content['d2']
     rn,rd = content['rn'],content['rd']
     param = [[n1,d1],[n2,d2],[rn,rd]]    
-    message, resultado = verifica_resposta(param)
-    r = {"message": message, "resultado": resultado}
+    message, resultado = verifica_resposta(param) #verifica_resposta no util (modelo dominio)
+    
+    passo = content['passo']
+    simplificado = [rn,rd]==resultado
 
-    return jsonify(r)
+    #Carrega modelo do aluno do cookie
+    modeloAluno = ModeloAluno()
+    modeloAluno.atualizaModeloDeCookie(request)
+
+    #realiza intervencao
+    msgIterv = intervencaoTutorialResposta(n1,d1,n2,d2,rn,rd,message,simplificado,passo,modeloAluno)
+    
+
+    r = {"message": message, "resultado": resultado, "msgTutoria": msgIterv}
+    response = jsonify(r)
+
+    #regrava modelo do aluno em cookie
+    modeloAluno.gravaModeloEmCookie(response)
+    
+        
+    return response
+
+# verifica se passo intermediario (fracoes com mesmo mmc) está certo
+@app.route("/pularExercicio", methods=["POST","GET"])
+def pularExercicio():
+    # content = request.get_json()
+     #Carrega modelo do aluno do cookie
+    modeloAluno = ModeloAluno()
+    modeloAluno.atualizaModeloDeCookie(request)
+
+    #realiza intervencao
+    msgIterv = inhtervencaoPularExercicio(modeloAluno)
+
+    r = {"msgTutoria": msgIterv}
+    response = jsonify(r)    
+    #regrava modelo do aluno em cookie
+    modeloAluno.gravaModeloEmCookie(response)
+
+    return response
 
 # verifica se passo intermediario (fracoes com mesmo mmc) está certo
 @app.route("/passo_intermediario", methods=["POST"])
@@ -50,34 +87,46 @@ def passo_intermediario():
     [[c_n1, c_d1], [c_n2,c_d2]] =  denominador_comum([n1,d1],[n2,d2])
 
     message : str
-    #inserir regras do passo intemediario aqui
+    
     if ((rn1,rd1,rn2,rd2) == (c_n1, c_d1,c_n2,c_d2)):
         message = "correto"
     else:
         message = "errado"
 
-    # TODO: pensar em uma forma de entregar a resposta do resultado (igual o /resposta)
-    #resultado = ()
+    #Carrega modelo do aluno do cookie
+    modeloAluno = ModeloAluno()
+    modeloAluno.atualizaModeloDeCookie(request)
 
-    # message, resultado = verifica_resposta(param)
-    r = {"message": message}
+    #realiza intervencao
+    msgIterv = intervencaoTutorialPassoIntermediario(n1,d1,n2,d2,rn1,rd1,rn2,rd2,message,modeloAluno)
+  
 
-    return jsonify(r)    
+        
+    r = {"message": message, "msgTutoria": msgIterv}
+    response = jsonify(r)    
+    #regrava modelo do aluno em cookie
+    modeloAluno.gravaModeloEmCookie(response)
+
+    return response
 
 
-# SERVIÇO PARA GERAR OS EXERCÍCIOS
-# POR ENQUANTO SÓ GERA 1/6 + 1/12
+
 
 @app.route("/exercicio", methods=['GET','POST'])
 def exercicio():
+    resp =   geraExercicio(request)
+    return resp
+
+# metodo de gerar exercicio inicial, excluir depois de validado o novo
+# SERVIÇO PARA GERAR OS EXERCÍCIOS
+# POR ENQUANTO SÓ GERA 1/6 + 1/12
+def geraExercicioDummy():
     r ={ 'n1' : 1,
          'd1' : 6,
          'n2' : 1,
          'd2' : 12
     }
     return jsonify(r)
-
-
 
 
 @app.after_request
@@ -94,4 +143,7 @@ def test():
 
     return resp
 
-app.run(host="0.0.0.0", port="5004")
+#app.run(host="0.0.0.0", port="5004")
+app.config['SESSION_COOKIE_SAMESITE'] = 'None'
+app.config['SESSION_COOKIE_SECURE'] = True
+app.run(host="localhost", port="5004")
