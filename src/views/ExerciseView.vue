@@ -4,7 +4,10 @@ import Fraction from '@/components/Fraction.vue';
 import { useUserStore } from '@/stores/user';
 import axios from 'axios';
 import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router';
 
+
+const router = useRouter()
 const $user = useUserStore();
 
 console.log($user);
@@ -20,7 +23,16 @@ const numerator2 = ref(1);
 const denominator1 = ref(1);
 const denominator2 = ref(1);
 
+const msgTutoria = ref("");
+msgTutoria.value = "";
+const Passos = {                    //Estados para acompanhar se aluno respondeu direto
+    INICIO: "INICIO",               //Exercicio está na primeira etapa
+    TODAS_ETAPAS: "TODAS_ETAPAS",	//Errou conta direta, fazendo processo longo    
+    SIMPLIFICA: "SIMPLIFICA"        //Faltou simplificar
+}
 
+let passo = Passos.INICIO;
+console.log(passo)
 
 function requestExercice() {
     let res = api.get('/exercicio').then(resp => {
@@ -29,6 +41,7 @@ function requestExercice() {
         numerator2.value = resp.data['n2'];
         denominator1.value = resp.data['d1'];
         denominator2.value = resp.data['d2'];
+        msgTutoria.value = resp.data['msgTutoria'];
     }).catch(error => {
         console.log(error);
     });
@@ -39,10 +52,34 @@ requestExercice();
 
 const canEditAnswer = ref(true);
 const canEditMiddleStep = ref(true);
+const canEditSimplification = ref(true);
 
 const showMiddleStep = ref(false);
 const showAnswer = ref(true);
 const showSimplification = ref(false);
+
+function tryToSkip() {
+    // window.alert("skip");
+    if (!showMiddleStep.value) {        
+        // passo = Passos.TODAS_ETAPAS;
+        msgTutoria.value="Tente resolver o problema em etapas"
+        showMiddleStep.value = true;
+        showAnswer.value = false;
+        ansnumerator.value = None;
+        ansdenominator.value = None;
+        return;
+    }
+
+    // const params = {
+    //     "n1": numerator1.value,        
+    // }
+    let res = api.post('/pularExercicio').then(resp => {
+        location.reload();
+    }).catch(error => {
+        console.log(error);
+    });
+
+}
 
 
 const ansnumerator = ref();
@@ -51,10 +88,15 @@ function checkAnswer() {
 
     if (showAnswer.value == true && !passou_resposta)
         checkUnsimplifiedAnswer();
-    if (!showAnswer.value)
+    passo = Passos.TODAS_ETAPAS
+    if (!showAnswer.value) {
+        passo = Passos.TODAS_ETAPAS
         checkMiddleStep();
-    if (passou_resposta)
+    }
+    if (passou_resposta) {
+        passo = Passos.SIMPLIFICA;
         checkSimplifiedAnswer();
+    }
 }
 
 
@@ -74,7 +116,8 @@ function checkMiddleStep() {
         "rn1": ms_n1.value,
         "rd1": ms_d1.value,
         "rn2": ms_n2.value,
-        "rd2": ms_d2.value
+        "rd2": ms_d2.value,
+        'passo': passo
     }
 
     console.log(params)
@@ -82,7 +125,9 @@ function checkMiddleStep() {
     let res = api.post('/passo_intermediario', params).then(resp => {
         let mensagem = resp.data['message'];
         // let resultado = resp.data['resultado'];        
-        window.alert(mensagem);
+        msgTutoria.value = resp.data['msgTutoria'];
+
+        //window.alert(mensagem);
         if (mensagem == 'correto') {
             canEditMiddleStep.value = false;
             showAnswer.value = true;
@@ -102,7 +147,8 @@ function checkUnsimplifiedAnswer() {
         'd1': denominator1.value,
         'd2': denominator2.value,
         'rn': ansnumerator.value,
-        'rd': ansdenominator.value
+        'rd': ansdenominator.value,
+        'passo': passo
     }
 
     console.log(params)
@@ -110,26 +156,28 @@ function checkUnsimplifiedAnswer() {
     let res = api.post('/resposta_simples', params).then(resp => {
         let mensagem = resp.data['message'];
         let resultado = resp.data['resultado'];
+        msgTutoria.value = resp.data['msgTutoria']
         // window.alert(resultado);
-        window.alert(mensagem);
+        //window.alert(mensagem);
         if (mensagem == 'errado' && !passou_mmc) {
             showMiddleStep.value = true;
             showAnswer.value = false;
-            ansnumerator.value = 0
-            ansdenominator.value = 0
+            ansnumerator.value = 0;
+            ansdenominator.value = 0;
         }
         if (mensagem == 'correto') {
 
             if (resultado[0] != ansnumerator.value &&
                 resultado[1] != ansdenominator.value) {
 
-                window.alert("precisa simplificar");
+                // window.alert("precisa simplificar");
 
                 passou_resposta = true;
                 showSimplification.value = true;
                 canEditAnswer.value = false;
                 canEditSimplification.value = true;
-            } else {
+            } else if (resultado[0] == ansnumerator.value &&
+                resultado[1] == ansdenominator.value) {
                 fimExercicio();
             }
         }
@@ -151,7 +199,8 @@ function checkSimplifiedAnswer() {
         'd1': denominator1.value,
         'd2': denominator2.value,
         'rn': s_ansnumerator.value,
-        'rd': s_ansdenominator.value
+        'rd': s_ansdenominator.value,
+        'passo': passo
     }
 
     console.log(params)
@@ -159,15 +208,18 @@ function checkSimplifiedAnswer() {
     let res = api.post('/resposta_simples', params).then(resp => {
         let mensagem = resp.data['message'];
         let resultado = resp.data['resultado'];
+        msgTutoria.value = resp.data['msgTutoria'];
         // window.alert(resultado);
-        window.alert(mensagem);
+        // window.alert(mensagem);
 
         if (mensagem == 'correto' &&
             resultado[0] != s_ansnumerator.value &&
             resultado[1] != s_ansdenominator.value) {
 
-            window.alert("precisa simplificar");
-        } else {
+            window.alert("Ainda é necessário simplificar");
+        } else if (mensagem == 'correto' &&
+            resultado[0] == s_ansnumerator.value &&
+            resultado[1] == s_ansdenominator.value) {
             fimExercicio();
         }
 
@@ -179,8 +231,8 @@ function checkSimplifiedAnswer() {
 
 function fimExercicio() {
     $user.increaseProgress();
-    window.alert("fim do exercício");
-
+    window.alert(msgTutoria.value);
+    location.reload();
 }
 // const stepOneEnabled = computed(() => {
 //     return !(answerEnabled.value);
@@ -213,7 +265,10 @@ export default {
                     ></v-progress-linear>
                 </div>
 
-                <h1 class="text-center font-weight-light">{{ $user.name }}, você sabe resolver esse exercício?</h1>
+                <h1 class="text-center font-weight-light">{{ $user.name }}, você sabe resolver esse exercício? </h1>
+                <h1 class="text-center font-weight-light">{{ msgTutoria }}</h1>
+
+
 
 
 
@@ -268,12 +323,19 @@ export default {
                             Responder
                         </v-btn>
                     </div>
+                    <div style="display:flex; justify-content: center; flex-flow: column;">
+                        <div>
+                            <v-btn @click="tryToSkip()" class="mt-5 bg-red">
+                                Pular
+                            </v-btn>
+                        </div>
+                    </div>
 
-                    <RouterLink to="/">
-                        <v-btn class="mt-5 bg-red btn">
-                            Desistir
-                        </v-btn>
-                    </RouterLink>
+                    <!-- <RouterLink to="/">
+                                <v-btn class="mt-5 bg-red">
+                                    Desistir
+                                </v-btn>
+                            </RouterLink> -->
                 </div>
             </div>
 
