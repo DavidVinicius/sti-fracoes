@@ -1,0 +1,1 @@
+rh._.exports({"0":[["Vídeo Aula"]],"1":[[" ","Vídeo Aula"]],"2":[[" ","Aproveite para assistir a vídeo aula sobre o tema, clicando no link abaixo:"," ","Vídeo aula sobre soma de frações"]],"id":"0"})
