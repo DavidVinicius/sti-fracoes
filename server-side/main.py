@@ -1,8 +1,8 @@
-from util import verifica_resposta,denominador_comum
+from modulo_especialista import verifica_resposta,denominador_comum
 from flask import Flask, request, jsonify
 
 from flask_cors import CORS
-from modelo_tutor import geraExercicio,PassosProblema, inhtervencaoPularExercicio, intervencaoTutorialPassoIntermediario, intervencaoTutorialResposta
+from modulo_tutor import geraExercicio,PassosProblema, inhtervencaoPularExercicio, intervencaoTutorialPassoIntermediario, intervencaoTutorialResposta
 from modelo_aluno import ModeloAluno
 
 
