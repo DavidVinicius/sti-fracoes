@@ -1,8 +1,7 @@
 from enum import Enum
-import random 
-from util import *
+from modulo_especialista import *
 from modelo_aluno import ModeloAluno
-import util
+import modulo_especialista as esp
 from flask import Request, Response, jsonify
 
 class PassosProblema(str,Enum):
@@ -11,7 +10,7 @@ class PassosProblema(str,Enum):
     SIMPLIFICA="SIMPLIFICA"         #Faltou simplificar
 
 
-niveis = ['facil','medio','dificil']
+#niveis = ['facil','medio','dificil']
 
 
 NIVEL_MAX = 2; #0,1,2 facil, medio, dificil, preparados
@@ -37,102 +36,7 @@ def geraExercicio(requisicao : Request):
     
     return response
 
-# dificil
-# 
-def geraFacil():
-    x = [ (1,6,1,3),
-        (1, 2, 1, 3),
-            (1, 2, 2, 3),
-            (1, 3, 1, 1),
-            (1, 2, 1, 1) ,           
-            (2, 3, 1, 2) ,           
-            (1, 4, 1, 2),
-            (1, 2, 1, 6)
-        ]
-    
-    i = random.randint(0,len(x)-1)
 
-    return { 'n1' : x[i][0],
-            'd1' : x[i][1],
-            'n2' : x[i][2],
-            'd2' : x[i][3],
-            'tipo': 'facil'
-            }
-
-
-
-def geraMedio():
-    x = [ (2, 6, 1, 3),
-            (1, 3, 1, 9),
-            (2, 3, 2, 9),
-            (3, 4, 1, 2) ,           
-            (1, 20, 1, 5)
-                        
-        ]
-    
-    i = random.randint(0,len(x)-1)
-
-    return { 'n1' : x[i][0],
-            'd1' : x[i][1],
-            'n2' : x[i][2],
-            'd2' : x[i][3],
-            'tipo': 'medio'
-            }
-
-
-# def gerarDificil():
-#     d1 = random.randint(7,10)
-#     n1 = random.randint(1,d1)
-    
-#     d2 = random.randint(7,d1-1)
-#     n2 = random.randint(1,d2)
-    
-#     if(d1==d2):
-#         d2+=1
-
-#     while not is_simplifica(n1,d1):
-#         d1 = random.randint(8,11)
-#         n1 = random.randint(1,d1)
-#     while not is_simplifica(n2,d2):
-#         d2 = random.randint(7,d1-1)
-#         if(d1==d2):
-#             d2+=1
-#         n2 = random.randint(1,d2)
-    
-#     return { 'n1' : n1,
-#             'd1' : d1,
-#             'n2' : n2,
-#             'd2' : d2,
-#             'tipo': 'dificil'
-#             }
-
-def gerarDificil():
-    x = [ (5, 12, 1, 16),
-            (8, 15, 1, 10),
-            (1, 8, 11, 16),
-            (3, 10, 1, 14),
-            (7, 16, 1, 14),
-            (9, 14, 5, 21),
-            (7, 12, 17, 18),
-            (1, 14, 7, 12),
-            (9, 10, 13, 16),
-            (1, 14, 11, 16),
-            (2, 9, 7, 12),
-            (3, 10, 1, 15),
-            (3, 14, 9, 49),
-            (4, 36, 6, 24),
-            (7, 20, 3, 16),
-            (7, 8, 9, 12),
-        ]
-    
-    i = random.randint(0,len(x)-1)
-    #return x[i]
-    return { 'n1' : x[i][0],
-            'd1' : x[i][1],
-            'n2' : x[i][2],
-            'd2' : x[i][3],
-            'tipo': 'preparado'
-            }
 
 
 def intervencaoTutorialResposta(n1,d1,n2,d2,#pergunta
@@ -166,7 +70,7 @@ def intervencaoTutorialResposta(n1,d1,n2,d2,#pergunta
     if (int(n1)+int(n2)==int(rn) and int(d1)+int(d2)==int(rd)):
         return "Para somar uma fração, use o MMC"
 
-    if (util.mmc(d1,d2)*2 == rd):
+    if (esp.mmc(d1,d2)*2 == rd):
         return "Para somar uma fração, some os valores do numerador e mantenha o valor do denominador."        
 
     if not corretude:        
@@ -189,11 +93,11 @@ def intervencaoTutorialPassoIntermediario(n1,d1,n2,d2,#pergunta
     
 
     if modeloAluno.errosSeguidosMMC == 3:
-        mmc = util.mmc(d1,d2)
+        mmc = esp.mmc(d1,d2)
         return f"O MMC entre {d1} e {d2} é {int(mmc)}"
 
     if modeloAluno.errosSeguidosMMC == 3:
-        mmc = util.mmc(d1,d2)
+        mmc = esp.mmc(d1,d2)
         return f"O MMC entre {d1} e {d2} é {int(mmc)}"
 
     if not corretude:
