@@ -27,6 +27,11 @@
 .operator {
     font-size: 2rem;
 }
+
+.help {
+    margin-top: 50px;
+    font-size: 1rem;
+}
 </style>
 
 <template>
@@ -109,6 +114,10 @@
                                     Desistir
                                 </v-btn>
                             </RouterLink> -->
+                </div>
+
+                <div class="help">
+                    <a href="help/index.htm" target="_blank">Está precisando de ajuda com o conteúdo?</a>
                 </div>
             </div>
 

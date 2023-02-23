@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<stopwords>
+
+  <wd name="a" />
+
+  <wd name="ainda" />
+
+  <wd name="algum" />
+
+  <wd name="alguma" />
+
+  <wd name="algumas" />
+
+  <wd name="alguns" />
+
+  <wd name="após" />
+
+  <wd name="aqui" />
+
+  <wd name="as" />
+
+  <wd name="cada" />
+
+  <wd name="com" />
+
+  <wd name="conseguir" />
+
+  <wd name="de" />
+
+  <wd name="depois" />
+
+  <wd name="desde" />
+
+  <wd name="deve" />
+
+  <wd name="e" />
+
+  <wd name="é" />
+
+  <wd name="elas" />
+
+  <wd name="eles" />
+
+  <wd name="em" />
+
+  <wd name="então" />
+
+  <wd name="era" />
+
+  <wd name="esta" />
+
+  <wd name="está" />
+
+  <wd name="estar" />
+
+  <wd name="estava" />
+
+  <wd name="este" />
+
+  <wd name="estes" />
+
+  <wd name="faço" />
+
+  <wd name="faz" />
+
+  <wd name="finalizado" />
+
+  <wd name="igual" />
+
+  <wd name="isto" />
+
+  <wd name="já" />
+
+  <wd name="lá" />
+
+  <wd name="mais" />
+
+  <wd name="mas" />
+
+  <wd name="na" />
+
+  <wd name="não" />
+
+  <wd name="no" />
+
+  <wd name="o" />
+
+  <wd name="ok" />
+
+  <wd name="onde" />
+
+  <wd name="os" />
+
+  <wd name="ou" />
+
+  <wd name="outra" />
+
+  <wd name="outro" />
+
+  <wd name="para" />
+
+  <wd name="pode" />
+
+  <wd name="por" />
+
+  <wd name="precisar" />
+
+  <wd name="quais" />
+
+  <wd name="qual" />
+
+  <wd name="qualquer" />
+
+  <wd name="quando" />
+
+  <wd name="que" />
+
+  <wd name="querer" />
+
+  <wd name="ref" />
+
+  <wd name="são" />
+
+  <wd name="se" />
+
+  <wd name="sem" />
+
+  <wd name="ser" />
+
+  <wd name="seu" />
+
+  <wd name="seus" />
+
+  <wd name="somos" />
+
+  <wd name="sou" />
+
+  <wd name="talvez" />
+
+  <wd name="também" />
+
+  <wd name="tem" />
+
+  <wd name="têm" />
+
+  <wd name="tenho" />
+
+  <wd name="toda" />
+
+  <wd name="todo" />
+
+  <wd name="tudo" />
+
+  <wd name="usado" />
+
+  <wd name="usar" />
+
+  <wd name="ver" />
+
+  <wd name="aquela" />
+
+  <wd name="aquelas" />
+
+  <wd name="aquele" />
+
+  <wd name="aqueles" />
+
+  <wd name="aquilo" />
+
+  <wd name="caminho" />
+
+  <wd name="cinco" />
+
+  <wd name="como" />
+
+  <wd name="dela" />
+
+  <wd name="dele" />
+
+  <wd name="dentro" />
+
+  <wd name="dois" />
+
+  <wd name="entre" />
+
+  <wd name="eram" />
+
+  <wd name="éramos" />
+
+  <wd name="estado" />
+
+  <wd name="estamos" />
+
+  <wd name="estão" />
+
+  <wd name="estas" />
+
+  <wd name="estavam" />
+
+  <wd name="estávamos" />
+
+  <wd name="eu" />
+
+  <wd name="fazem" />
+
+  <wd name="fazemos" />
+
+  <wd name="feito" />
+
+  <wd name="nenhum" />
+
+  <wd name="nenhuma" />
+
+  <wd name="nós" />
+
+  <wd name="nove" />
+
+  <wd name="oito" />
+
+  <wd name="okay" />
+
+  <wd name="pela" />
+
+  <wd name="pelo" />
+
+  <wd name="porém" />
+
+  <wd name="porque" />
+
+  <wd name="quatro" />
+
+  <wd name="seis" />
+
+  <wd name="sete" />
+
+  <wd name="sido" />
+
+  <wd name="sua" />
+
+  <wd name="suas" />
+
+  <wd name="tais" />
+
+  <wd name="tal" />
+
+  <wd name="temos" />
+
+  <wd name="todas" />
+
+  <wd name="todos" />
+
+  <wd name="três" />
+
+  <wd name="um" />
+
+  <wd name="uma" />
+
+  <wd name="usado" />
+
+  <wd name="você" />
+
+  <wd name="vocês" />
+
+  <wd name="zero" />
+
+  <wd name="1" />
+
+  <wd name="2" />
+
+  <wd name="3" />
+
+  <wd name="4" />
+
+  <wd name="5" />
+
+  <wd name="6" />
+
+  <wd name="7" />
+
+  <wd name="8" />
+
+  <wd name="9" />
+
+  <wd name="0" />
+
+</stopwords>
