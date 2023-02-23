@@ -12,16 +12,9 @@
         <Wizard />
     
         <div>
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Velit fugit amet doloribus nihil accusantium mollitia corporis officiis modi delectus omnis iste, odit voluptate debitis asperiores expedita. Tenetur quam quos at?
-          Minus, animi quos. Officia sequi, iusto reiciendis nisi eum aliquid asperiores rem quos voluptatum quis sunt minima dignissimos qui accusamus harum laboriosam, aliquam soluta! Est sapiente ut praesentium a veniam?
-          Id iure illum atque voluptatem dignissimos. Accusamus tempora sit mollitia repudiandae nemo. Corrupti earum incidunt porro, reiciendis voluptatem, omnis exercitationem, non illum magnam voluptas rem autem consequatur ab officia modi.
-          Nihil illum, nobis fugiat tempora alias maxime labore, aliquam cupiditate porro officiis, similique veniam atque mollitia et incidunt eaque sint eos ab enim hic. Deleniti dolorem veniam odit placeat nemo?
-          Minima architecto voluptatum ullam dolores nam ab suscipit voluptatibus fugit maxime porro temporibus adipisci eos autem assumenda a eius veritatis unde consectetur delectus soluta aliquam laborum, reiciendis esse. Nam, quas?
-          Rem a maiores natus asperiores, et cum unde eos, iusto necessitatibus animi magnam saepe eaque doloribus minima omnis molestias, nemo iure? Nulla consequuntur totam saepe sapiente asperiores id illo ut.
-          Placeat velit facere vero magni, autem architecto tempore nostrum nisi distinctio molestias aspernatur corporis ea optio vitae alias eaque provident minima! Nemo, et ipsam ratione ducimus enim minus omnis qui.
-          Ducimus, quasi ad quaerat in porro tempora similique voluptates sit. Autem, inventore neque aspernatur atque aliquam tempore repellendus cumque ex pariatur commodi tempora, provident perferendis, animi culpa libero nihil consequuntur!
-          Sapiente beatae itaque, accusamus reiciendis quo nesciunt ipsum amet. Nesciunt neque alias animi cumque explicabo blanditiis quidem beatae, numquam hic repudiandae, tempora eum architecto sed quod laborum autem nostrum minima.
-          Accusantium excepturi, quas quam ea mollitia iusto in doloremque delectus sint ratione, illo debitis cumque, labore est? Expedita inventore fugit aliquam alias reiciendis quia, sapiente fugiat veritatis maiores eaque non.
+          Seja bem-vindo ao Matemágika, um Sistema Tutorial Inteligente (STI) desenvolvido para te ajudar a exercitar e melhorar seus conhecimentos de matemática. Resolva os exercícios em passos, calculando o MMC, ou de uma só vez, caso você já conheça a resposta. Mas atenção, não esqueça de simplicar as frações ao final!
+          <br><br>
+          E aí, preparado para se tornar o mago da soma de frações?
         </div>
     
 
@@ -36,6 +29,11 @@
             Próxima etapa
           </v-btn>
         </RouterLink>
+
+        <div class="help">
+            <br>
+            <a href="help/index.htm" target="_blank">Se precisar de ajuda, clique aqui!</a>
+        </div>
       </div>
     
     </v-container>
